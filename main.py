@@ -204,6 +204,59 @@ async def accessad(interaction: discord.Interaction, user_id: str):
         )
     )
 
+@bot.tree.command(name="remove")
+async def remove(interaction: discord.Interaction, user_id: str):
+    if not owner(interaction):
+        return await interaction.response.send_message("No permission")
+
+    # Ensure access system is enabled
+    ACCESS["enabled"] = True
+
+    if str(user_id) in ACCESS["users"]:
+        ACCESS["users"].pop(str(user_id))
+        save(ACCESS_FILE, ACCESS)
+        await interaction.response.send_message(
+            embed=embed(
+                "🔐 ACCESS REMOVED",
+                f"User `{user_id}` has been removed from access list",
+                0xff0000
+            )
+        )
+    else:
+        await interaction.response.send_message(
+            embed=embed(
+                "⚠️ USER NOT FOUND",
+                f"User `{user_id}` is not in access list",
+                0xffaa00
+            )
+        )
+
+@bot.tree.command(name="accesslist")
+async def accesslist(interaction: discord.Interaction):
+    if not owner(interaction):
+        return await interaction.response.send_message("No permission")
+
+    # Ensure access system is enabled
+    ACCESS["enabled"] = True
+
+    if ACCESS["users"]:
+        users_list = "\n".join(f"`{uid}`" for uid in ACCESS["users"])
+        await interaction.response.send_message(
+            embed=embed(
+                "🔐 ACCESS LIST",
+                f"Currently allowed users:\n{users_list}",
+                0x00ff00
+            )
+        )
+    else:
+        await interaction.response.send_message(
+            embed=embed(
+                "🔐 ACCESS LIST",
+                "No users currently have access.",
+                0xffaa00
+            )
+        )
+
 # ================= REASON INPUT =================
 @bot.event
 async def on_message(msg):
