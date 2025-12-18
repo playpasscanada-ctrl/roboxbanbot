@@ -186,6 +186,24 @@ async def maintenance(interaction: discord.Interaction, mode: str):
         embed=embed("🛠 MAINTENANCE",f"Status: `{mode.upper()}`",0xffaa00)
     )
 
+@bot.tree.command(name="accessad")
+async def accessad(interaction: discord.Interaction, user_id: str):
+    if not owner(interaction):
+        return await interaction.response.send_message("No permission")
+
+    # force string key
+    ACCESS["enabled"] = True
+    ACCESS["users"][str(user_id)] = True
+    save(ACCESS_FILE, ACCESS)
+
+    await interaction.response.send_message(
+        embed=embed(
+            "🔐 ACCESS GRANTED",
+            f"User `{user_id}` can now play",
+            0x00ff00
+        )
+    )
+
 # ================= REASON INPUT =================
 @bot.event
 async def on_message(msg):
