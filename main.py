@@ -64,7 +64,7 @@ def cleanup():
 
 # ================= DISCORD =================
 class Bot(discord.Client):
-    def __init__(self):
+    def init(self):
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(intents=intents)
